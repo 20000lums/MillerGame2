@@ -18,12 +18,15 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            move(Vector2.down);
+        }
     }
 
-    List<bool> move(Vector2 Direction)
+    List<bool> move(Vector2 Direction) 
     {
-        if (Physics2D.BoxCast(transform.position, transform.localScale, 0f, Direction, Direction.magnitude, ground) == null)
+        if (!Physics2D.BoxCast(transform.position, transform.localScale, 0f, Direction, Direction.magnitude, ground))
         {
            RB.MovePosition(Direction + new Vector2(transform.position.x, transform.position.y));
            return new List<bool>() { false, false };
@@ -31,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
            RB.MovePosition(Physics2D.BoxCast(transform.position, transform.localScale, 0f, Direction, Direction.magnitude, ground).centroid);
-           return new List<bool>() { Physics2D.BoxCast(transform.position, transform.localScale, 0f, Vector2.right, .01f, ground) != null, Physics2D.BoxCast(transform.position, transform.localScale, 0f, Vector2.up, .01f, ground) != null };
+           return new List<bool>() { Physics2D.BoxCast(transform.position, transform.localScale, 0f, Vector2.right, .01f, ground), Physics2D.BoxCast(transform.position, transform.localScale, 0f, Vector2.up, .01f, ground) };
         }
 
     }
