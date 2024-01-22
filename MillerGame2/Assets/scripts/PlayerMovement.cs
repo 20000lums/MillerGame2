@@ -10,10 +10,12 @@ public class PlayerMovement : MonoBehaviour
     public Collider2D Collider;
     public LayerMask ground;
     private Vector2 moveVector;
-   
+    private ContactFilter2D groundFilter;
     
     void Start()
     {
+        groundFilter.useTriggers = false;
+        groundFilter.SetLayerMask(ground);
         RB.isKinematic = true;
     }
 
@@ -40,18 +42,47 @@ public class PlayerMovement : MonoBehaviour
         moveVector = new Vector2(0, 0);
     }
     //simulates normal force. moving using this method will prevent you from going through layer "ground" but will be uneffected by physics
+    
     List<bool> move(Vector2 Direction) 
     {
-        if (!Physics2D.BoxCast(transform.position, transform.localScale, 0f, Direction, Direction.magnitude, ground))
+        RaycastHit2D[] Results = new RaycastHit2D[16];
+        if (RB.Cast(Direction, groundFilter, Results, Direction.magnitude ) == 0)
         {
-           RB.MovePosition(Direction + new Vector2(transform.position.x, transform.position.y));
-           return new List<bool>() { false, false };
+            RB.MovePosition(Direction + new Vector2(transform.position.x, transform.position.y));
+            return new List<bool>(){false, false};
         }
         else
         {
-           RB.MovePosition(Physics2D.BoxCast(transform.position, transform.localScale, 0f, Direction, Direction.magnitude, ground).centroid);
-           return new List<bool>() { Physics2D.BoxCast(transform.position, transform.localScale, 0f, Vector2.right, .01f, ground), Physics2D.BoxCast(transform.position, transform.localScale, 0f, Vector2.up, .01f, ground) };
-        }
+            RaycastHit2D cum;
+             List<RaycastHit2D> ResultsList = new List<RaycastHit2D>();
+            for (int i = 0; i < Results.Length; i++)
+            {
+                if(Vector2.Dot(Results[i].normal,Direction) > 0 )
+                {
+                    ResultsList.Add(Results[i]);
+                }
+                
+            }
+            if(ResultsList.Count == 0)
+            {
+                 RB.MovePosition(Direction + new Vector2(transform.position.x, transform.position.y));
+                 return new List<bool>(){false, false};
+            }
+            cum = ResultsList[0];
+            for (int i = 1; i < ResultsList.Count; i++)
+            {
+                if(cum.distance < ResultsList[i].distance)
+                {
+                    cum = ResultsList[i];
+                }
+            }
+            RB.MovePosition(cum.centroid);
+            return new List<bool>(){cum.normal.x !=0, cum.normal.y !=0};
 
+
+        }
     }
+      
+      
+    
 }
