@@ -559,8 +559,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   TopSpeed: 1
-  AccelerationTime: 1
-  DecelerationTime: 1
+  AccelerationTime: 3
+  DecelerationTime: 2
+  JumpHeight: 1
+  JumpHangTime: 1
 --- !u!1 &881858663
 GameObject:
   m_ObjectHideFlags: 0

@@ -45,12 +45,22 @@ public class PlayerMovement : MonoBehaviour
     public Collider2D Collider;
     public LayerMask ground;
     private ContactFilter2D groundFilter;
+    // variables for movement
     private int GroundState = 1;
     private float speed = 0;
-    // movement variables n shit. 
+    private int AirGraph = 0;
+    private bool IsDodge = false;
+    public int speedLevel { get; private set; } = 0;
+    // movement variables n shit.
+    // basic movement
     public float TopSpeed = 1;
     public float AccelerationTime = 1;
     public float DecelerationTime = 1;
+    // normal jump
+    public float JumpHeight = 1;
+    public float JumpHangTime = 1;
+    // long jump
+
 
     void Start()
     {
@@ -73,6 +83,10 @@ public class PlayerMovement : MonoBehaviour
             if(LeftRight.ReadValue<float>() != 0)
             {
                 speed += Mathf.Sign(LeftRight.ReadValue<float>())*TopSpeed/(AccelerationTime*50);
+                if(Mathf.Abs(speed) > TopSpeed)
+                {
+                    speed = Mathf.Sign(speed) * TopSpeed;
+                }
             }
             else if(speed != 0)
             {
@@ -88,6 +102,29 @@ public class PlayerMovement : MonoBehaviour
             {
                 speed = 0;
             }
+            speedLevel = (speed/TopSpeed));
+            if (Button1.ReadValue<float>() == 1)
+            {
+                GroundState = 2;
+                if(IsDodge)
+                {
+                    AirGraph = 2
+                }
+                else if(Button3.ReadValue<float>() == 1)
+                {
+                    AirGraph = 3;
+                }
+                else
+                {
+                    AirGraph = 1;
+                }
+            }
+            if(RB.Cast(Vector2.down, groundFilter, Results, .01f) == 0)
+            {
+                GroundState = 2;
+                AirGraph = 0;
+            }
+            
         }
     }
 
