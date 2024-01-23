@@ -44,40 +44,53 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody2D RB;
     public Collider2D Collider;
     public LayerMask ground;
-    private Vector2 moveVector;
     private ContactFilter2D groundFilter;
-    private int state = 1;
+    private int GroundState = 1;
+    private float speed = 0;
+    // movement variables n shit. 
+    public float TopSpeed = 1;
+    public float AccelerationTime = 1;
+    public float DecelerationTime = 1;
 
     void Start()
     {
         groundFilter.useTriggers = false;
         groundFilter.SetLayerMask(ground);
         RB.isKinematic = true;
+        move(new Vector2(0,-2));
     }
 
     
     void  FixedUpdate()
     {
-        if(Input.GetKey(KeyCode.D))
-        {
-            moveVector.x += .1f;
-        }
-        if(Input.GetKey(KeyCode.A))
-        {
-            moveVector.x += -.1f;
-        }
-        if(Input.GetKey(KeyCode.W))
-        {
-            moveVector.y += .1f;
-        }
-        if(Input.GetKey(KeyCode.S))
-        {
-            moveVector.y += -.1f;
-        }
-        move(moveVector);
-        moveVector = new Vector2(0, 0);
-        Debug.Log(LeftRight.ReadValue<float>());
+        groundedUpdate();
     }
+
+    void groundedUpdate()
+    {
+        if(GroundState == 1)
+        {
+            if(LeftRight.ReadValue<float>() != 0)
+            {
+                speed += Mathf.Sign(LeftRight.ReadValue<float>())*TopSpeed/(AccelerationTime*50);
+            }
+            else if(speed != 0)
+            {
+                float signNow;
+                signNow = Mathf.Sign(speed);
+                speed += Mathf.Sign(speed)*-1*TopSpeed/(DecelerationTime*50);
+                if(signNow != Mathf.Sign(speed))
+                {
+                    speed = 0;
+                }
+            }
+            if (move(new Vector2(speed, 0))[0])
+            {
+                speed = 0;
+            }
+        }
+    }
+
     //simulates normal force. moving using this method will prevent you from going through layer "ground" but will be uneffected by momentum n stuff
     List<bool> move(Vector2 Direction) 
     {
