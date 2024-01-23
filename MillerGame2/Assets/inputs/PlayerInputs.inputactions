@@ -6,13 +6,40 @@
             "id": "722ca761-d876-4cb4-8d57-f02b3a0484a2",
             "actions": [
                 {
-                    "name": "Stick/WSAD",
-                    "type": "Value",
+                    "name": "LeftRight",
+                    "type": "Button",
                     "id": "d82e1d30-cd24-4dff-97a8-7d97ad343415",
-                    "expectedControlType": "Axis",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ActionPrimary",
+                    "type": "Button",
+                    "id": "7c74e3f7-cc2f-4779-bbf7-d64e6182cc9c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ActionSecondary",
+                    "type": "Button",
+                    "id": "3eba6dcc-be1a-477b-9587-513509716849",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ActionTirtiary",
+                    "type": "Button",
+                    "id": "42aa979b-0324-4321-9057-d1682943db66",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -23,7 +50,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Stick/WSAD",
+                    "action": "LeftRight",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -34,7 +61,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Stick/WSAD",
+                    "action": "LeftRight",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -45,7 +72,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Stick/WSAD",
+                    "action": "LeftRight",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -56,7 +83,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Stick/WSAD",
+                    "action": "LeftRight",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -67,7 +94,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Stick/WSAD",
+                    "action": "LeftRight",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -78,9 +105,75 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Stick/WSAD",
+                    "action": "LeftRight",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "e94d7238-7ea3-4409-bd3f-488121d1d04c",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ActionPrimary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d152d1da-5254-4629-a772-55bfadea4819",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ActionPrimary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8e20f722-6012-46ea-abb5-8e2de6d180de",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ActionSecondary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7eefc95b-72d3-49e7-90e3-55bd2e871898",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ActionSecondary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a6b602b3-4535-49d3-becd-84130b58489d",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ActionTirtiary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1fd175a-7500-43cd-ab92-0e6358497910",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ActionTirtiary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

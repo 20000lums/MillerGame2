@@ -1,11 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 
 public class PlayerMovement : MonoBehaviour
 {
+
+
+    private PlayerInputs playerInputs;
+    private InputAction LeftRight;
+    private InputAction Button1;
+    private InputAction Button2;
+    private InputAction Button3;
+
+    private void Awake()
+    {
+        playerInputs = new PlayerInputs();
+    }
+
+    private void OnEnable()
+    {
+        LeftRight = playerInputs.Player.LeftRight;
+        LeftRight.Enable();
+        Button1 = playerInputs.Player.ActionPrimary;
+        Button1.Enable();
+        Button2 = playerInputs.Player.ActionSecondary;
+        Button2.Enable();
+        Button3 = playerInputs.Player.ActionTirtiary;
+        Button3.Enable();
+    }
+
+    private void OnDisable()
+    {
+        LeftRight.Disable();
+        Button1.Disable();
+        Button2.Disable();
+        Button3.Disable();
+    }
+
+
     public Rigidbody2D RB;
     public Collider2D Collider;
     public LayerMask ground;
@@ -41,6 +76,7 @@ public class PlayerMovement : MonoBehaviour
         }
         move(moveVector);
         moveVector = new Vector2(0, 0);
+        Debug.Log(LeftRight.ReadValue<float>());
     }
     //simulates normal force. moving using this method will prevent you from going through layer "ground" but will be uneffected by momentum n stuff
     List<bool> move(Vector2 Direction) 
