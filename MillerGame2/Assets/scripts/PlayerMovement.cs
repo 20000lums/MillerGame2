@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
 
-
+//all this is input stuff
     private PlayerInputs playerInputs;
     private InputAction LeftRight;
     private InputAction Button1;
@@ -39,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
         Button2.Disable();
         Button3.Disable();
     }
-
+//this concludes the input stuff
 
     public Rigidbody2D RB;
     public Collider2D Collider;
@@ -50,7 +50,8 @@ public class PlayerMovement : MonoBehaviour
     private float speed = 0;
     private int AirGraph = 0;
     private bool IsDodge = false;
-    public int speedLevel { get; private set; } = 0;
+    public float speedLevel { get; private set; } = 0;
+    float GTime = 0;
     // movement variables n shit.
     // basic movement
     public float TopSpeed = 1;
@@ -60,20 +61,78 @@ public class PlayerMovement : MonoBehaviour
     public float JumpHeight = 1;
     public float JumpHangTime = 1;
     // long jump
-
+    public float LongJumpHeight = 1;
+    public float LongJumpHangTime = 1;
+    // high jump
+    public float HighJumpStepHeight = 1;
+    public float HighJumpBaseHeight = 1;
+    public float HighJumpHangTime = 1;
+    // stomp
+    public float StompSpeed = 1;
 
     void Start()
     {
         groundFilter.useTriggers = false;
         groundFilter.SetLayerMask(ground);
         RB.isKinematic = true;
-        move(new Vector2(0,-2));
     }
 
     
-    void  FixedUpdate()
+    void FixedUpdate()
     {
+        FallingUpdate();
+        AirUpdate();
         groundedUpdate();
+    }
+    //AirGraph 0 = fall
+    //AirGraph 1 = normal jump
+    //AirGraph 2 = long jump
+    //AirGraph 3 = high jump
+    //Airgraph 4 = stomp
+    float getGraph(int GraphType, float GraphPoint)
+    {
+        return 1;
+    }
+
+    void AirUpdate()
+    {
+        if(GroundState == 2)
+        {
+            if(Button3.ReadValue<float>() == 1 && AirGraph != 4)
+            {
+                AirGraph = 4;
+                GTime = 0;
+            }
+            List<bool> CollisionList = new List<bool>();
+            CollisionList = move( new Vector2(speed , getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)));
+            GTime += .02f;
+            if(CollisionList[0])
+            {
+                GroundState = 3;
+            }
+            if(CollisionList[1] && Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)) == -1)
+            {
+                GroundState = 1;
+                GTime = 0;
+            }
+        }
+    }
+
+    void StartFall(Vector2 KnockbackDirection)
+    {
+        GroundState = 3;
+        RB.isKinematic = false;
+        RB.velocity = KnockbackDirection;
+    }
+
+    void FallingUpdate()
+    {
+        RaycastHit2D[] trash = new RaycastHit2D[16];
+        if(GroundState == 3 && RB.Cast(Vector2.down, groundFilter,trash, .01f) != 0)
+        {
+            RB.isKinematic = true;
+            GroundState = 1;
+        }
     }
 
     void groundedUpdate()
@@ -102,13 +161,13 @@ public class PlayerMovement : MonoBehaviour
             {
                 speed = 0;
             }
-            speedLevel = (speed/TopSpeed));
+            speedLevel = (3*speed/TopSpeed)-((3*speed/TopSpeed)%1);
             if (Button1.ReadValue<float>() == 1)
             {
                 GroundState = 2;
                 if(IsDodge)
                 {
-                    AirGraph = 2
+                    AirGraph = 2;
                 }
                 else if(Button3.ReadValue<float>() == 1)
                 {
@@ -119,7 +178,8 @@ public class PlayerMovement : MonoBehaviour
                     AirGraph = 1;
                 }
             }
-            if(RB.Cast(Vector2.down, groundFilter, Results, .01f) == 0)
+            RaycastHit2D[] trash = new RaycastHit2D[16];
+            if(RB.Cast(Vector2.down, groundFilter,trash, .01f) == 0)
             {
                 GroundState = 2;
                 AirGraph = 0;
@@ -132,7 +192,7 @@ public class PlayerMovement : MonoBehaviour
     List<bool> move(Vector2 Direction) 
     {
         RaycastHit2D[] Results = new RaycastHit2D[16];
-        if (RB.Cast(Direction, groundFilter, Results, Direction.magnitude ) == 0)
+        if (RB.Cast(Direction, groundFilter, Results, Direction.magnitude) == 0)
         {
             RB.MovePosition(Direction + new Vector2(transform.position.x, transform.position.y));
             return new List<bool>(){false, false};
