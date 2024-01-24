@@ -91,15 +91,32 @@ public class PlayerMovement : MonoBehaviour
     //Airgraph 4 = stomp
     float getGraph(int GraphType, float GraphPoint)
     {
-        return 1;
+        switch(GraphType)
+        {
+            case 0:
+                return -5 *Mathf.Pow(GraphPoint, 2);
+            case 1:
+                return -JumpHeight*Mathf.Pow((1/JumpHangTime)*(GraphPoint - JumpHangTime) , 2) + JumpHeight;
+            case 2:
+                return -LongJumpHeight * Mathf.Pow((1 / LongJumpHangTime) * (GraphPoint - LongJumpHangTime), 2) + LongJumpHeight;
+            case 3:
+                return 4;
+            case 4:
+                return -StompSpeed * GraphPoint;
+            
+        }
+        return 7;
     }
 
     void AirUpdate()
     {
+        
         if(GroundState == 2)
         {
-            if(Button3.ReadValue<float>() == 1 && AirGraph != 4)
+            
+            if (Button3.ReadValue<float>() == 1 && AirGraph != 4)
             {
+                Debug.Log("thisHappened");
                 AirGraph = 4;
                 GTime = 0;
             }
@@ -108,12 +125,16 @@ public class PlayerMovement : MonoBehaviour
             GTime += .02f;
             if(CollisionList[0])
             {
-                GroundState = 3;
+                StartFall(new Vector2(Mathf.Sign(speed), 0) * 3);
             }
             if(CollisionList[1] && Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)) == -1)
             {
                 GroundState = 1;
                 GTime = 0;
+            }
+            if(CollisionList[1] && Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)) == 1)
+            {
+                StartFall(new Vector2(Mathf.Sign(speed), -1) * 3);
             }
         }
     }
@@ -164,6 +185,7 @@ public class PlayerMovement : MonoBehaviour
             speedLevel = (3*speed/TopSpeed)-((3*speed/TopSpeed)%1);
             if (Button1.ReadValue<float>() == 1)
             {
+                
                 GroundState = 2;
                 if(IsDodge)
                 {
@@ -175,6 +197,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else
                 {
+                    Debug.Log("this stuff happened");
                     AirGraph = 1;
                 }
             }
