@@ -116,14 +116,15 @@ public class PlayerMovement : MonoBehaviour
             
             if (Button3.ReadValue<float>() == 1 && AirGraph != 4)
             {
-                Debug.Log("thisHappened");
+                
                 AirGraph = 4;
                 GTime = 0;
             }
             List<bool> CollisionList = new List<bool>();
             CollisionList = move( new Vector2(speed , getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)));
             GTime += .02f;
-            if(CollisionList[0])
+            Debug.Log(CollisionList[1]);
+            if (CollisionList[0])
             {
                 StartFall(new Vector2(Mathf.Sign(speed), 0) * 3);
             }
@@ -134,6 +135,7 @@ public class PlayerMovement : MonoBehaviour
             }
             if(CollisionList[1] && Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)) == 1)
             {
+                
                 StartFall(new Vector2(Mathf.Sign(speed), -1) * 3);
             }
         }
@@ -197,7 +199,6 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("this stuff happened");
                     AirGraph = 1;
                 }
             }
@@ -245,7 +246,7 @@ public class PlayerMovement : MonoBehaviour
                     cum = ResultsList[i];
                 }
             }
-            RB.MovePosition(cum.centroid);
+            transform.position = (new Vector3(cum.centroid.x, cum.centroid.y, 0));
             return new List<bool>(){cum.normal.x !=0, cum.normal.y !=0};
         }
     }
