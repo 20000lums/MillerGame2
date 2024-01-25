@@ -50,6 +50,8 @@ public class PlayerMovement : MonoBehaviour
     private float speed = 0;
     private int AirGraph = 0;
     private bool IsDodge = false;
+    private bool CanDodge = true;
+    private float DodgeTime = 0;
     public float speedLevel { get; private set; } = 0;
     float GTime = 0;
     // movement variables n shit.
@@ -69,6 +71,9 @@ public class PlayerMovement : MonoBehaviour
     public float HighJumpHangTime = 1;
     // stomp
     public float StompSpeed = 1;
+    // dodge
+    public float DodgeLeingth = 1;
+    public float DodgeCooldown = 1.5f;
 
     void Start()
     {
@@ -94,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
         switch(GraphType)
         {
             case 0:
-                return -5 *Mathf.Pow(GraphPoint, 2);
+                return -8 *Mathf.Pow(GraphPoint, 2);
             case 1:
                 return -JumpHeight*Mathf.Pow((1/JumpHangTime)*(GraphPoint - JumpHangTime) , 2) + JumpHeight;
             case 2:
@@ -123,26 +128,27 @@ public class PlayerMovement : MonoBehaviour
             List<bool> CollisionList = new List<bool>();
             CollisionList = move( new Vector2(speed , getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)));
             GTime += .02f;
-            Debug.Log(CollisionList[1]);
             if (CollisionList[0])
             {
-                StartFall(new Vector2(Mathf.Sign(speed), 0) * 3);
+                StartFall(new Vector2(-Mathf.Sign(speed), 0) * 3);
             }
             if(CollisionList[1] && Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)) == -1)
             {
                 GroundState = 1;
                 GTime = 0;
             }
-            if(CollisionList[1] && Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)) == 1)
+            else if(CollisionList[1])
             {
-                
                 StartFall(new Vector2(Mathf.Sign(speed), -1) * 3);
             }
+            
+            
         }
     }
 
     void StartFall(Vector2 KnockbackDirection)
     {
+        speed = 0;
         GroundState = 3;
         RB.isKinematic = false;
         RB.velocity = KnockbackDirection;
@@ -151,7 +157,7 @@ public class PlayerMovement : MonoBehaviour
     void FallingUpdate()
     {
         RaycastHit2D[] trash = new RaycastHit2D[16];
-        if(GroundState == 3 && RB.Cast(Vector2.down, groundFilter,trash, .01f) != 0)
+        if(GroundState == 3 && RB.Cast(Vector2.down, groundFilter,trash, .02f) != 0)
         {
             RB.isKinematic = true;
             GroundState = 1;
@@ -160,6 +166,7 @@ public class PlayerMovement : MonoBehaviour
 
     void groundedUpdate()
     {
+         
         if(GroundState == 1)
         {
             if(LeftRight.ReadValue<float>() != 0)
@@ -185,6 +192,17 @@ public class PlayerMovement : MonoBehaviour
                 speed = 0;
             }
             speedLevel = (3*speed/TopSpeed)-((3*speed/TopSpeed)%1);
+            if(Button2.ReadValue<float>() == 1 && CanDodge)
+            {
+                IsDodge = true;
+                CanDodge = false;
+            }
+            if(!CanDodge)
+            {
+                IsDodge = DodgeTime <= DodgeLeingth;
+                CanDodge = DodgeTime > DodgeCooldown;
+                DodgeTime += .02f;
+            }
             if (Button1.ReadValue<float>() == 1)
             {
                 
@@ -192,6 +210,9 @@ public class PlayerMovement : MonoBehaviour
                 if(IsDodge)
                 {
                     AirGraph = 2;
+                    CanDodge = true;
+                    IsDodge = false;
+                    DodgeTime = 0;
                 }
                 else if(Button3.ReadValue<float>() == 1)
                 {
@@ -203,11 +224,12 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
             RaycastHit2D[] trash = new RaycastHit2D[16];
-            if(RB.Cast(Vector2.down, groundFilter,trash, .01f) == 0)
-            {
-                GroundState = 2;
-                AirGraph = 0;
-            }
+            //if(RB.Cast(Vector2.down, groundFilter,trash, .01f) == 0)
+            //{
+            //    GroundState = 2;
+            //    AirGraph = 0;
+            //    Debug.Log("pizza");
+            //}
             
         }
     }
