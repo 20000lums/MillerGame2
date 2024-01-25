@@ -79,7 +79,6 @@ public class PlayerMovement : MonoBehaviour
     {
         groundFilter.useTriggers = false;
         groundFilter.SetLayerMask(ground);
-        RB.isKinematic = true;
     }
 
     
@@ -132,7 +131,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 StartFall(new Vector2(-Mathf.Sign(speed), 0) * 3);
             }
-            if(CollisionList[1] && Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)) == -1)
+            if(CollisionList[1] && Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)) < 0)
             {
                 GroundState = 1;
                 GTime = 0;
@@ -224,12 +223,11 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
             RaycastHit2D[] trash = new RaycastHit2D[16];
-            //if(RB.Cast(Vector2.down, groundFilter,trash, .01f) == 0)
-            //{
-            //    GroundState = 2;
-            //    AirGraph = 0;
-            //    Debug.Log("pizza");
-            //}
+            if(RB.Cast(Vector2.down, groundFilter,trash, .01f) == 0)
+            {
+                GroundState = 2;
+                AirGraph = 0;
+            }
             
         }
     }
@@ -268,6 +266,7 @@ public class PlayerMovement : MonoBehaviour
                     cum = ResultsList[i];
                 }
             }
+            Debug.Log(cum.centroid - new Vector2(transform.position.x, transform.position.y));
             transform.position = (new Vector3(cum.centroid.x, cum.centroid.y, 0));
             return new List<bool>(){cum.normal.x !=0, cum.normal.y !=0};
         }

@@ -748,8 +748,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6412630241858928201, guid: fce95ccfb65a22d40bb76516b5f7579c, type: 3}
+      propertyPath: JumpHeight
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6412630241858928201, guid: fce95ccfb65a22d40bb76516b5f7579c, type: 3}
       propertyPath: DodgeLeingth
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6412630241858928201, guid: fce95ccfb65a22d40bb76516b5f7579c, type: 3}
+      propertyPath: JumpHangTime
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 6412630241858928201, guid: fce95ccfb65a22d40bb76516b5f7579c, type: 3}
       propertyPath: DodgeCooldown
@@ -758,6 +766,22 @@ PrefabInstance:
     - target: {fileID: 6412630241858928205, guid: fce95ccfb65a22d40bb76516b5f7579c, type: 3}
       propertyPath: m_Name
       value: player
+      objectReference: {fileID: 0}
+    - target: {fileID: 6412630241858928206, guid: fce95ccfb65a22d40bb76516b5f7579c, type: 3}
+      propertyPath: m_BodyType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6412630241858928206, guid: fce95ccfb65a22d40bb76516b5f7579c, type: 3}
+      propertyPath: m_Simulated
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6412630241858928206, guid: fce95ccfb65a22d40bb76516b5f7579c, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6412630241858928206, guid: fce95ccfb65a22d40bb76516b5f7579c, type: 3}
+      propertyPath: m_UseFullKinematicContacts
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fce95ccfb65a22d40bb76516b5f7579c, type: 3}
