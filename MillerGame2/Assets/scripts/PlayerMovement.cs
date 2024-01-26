@@ -98,7 +98,7 @@ public class PlayerMovement : MonoBehaviour
         switch(GraphType)
         {
             case 0:
-                return -8 *Mathf.Pow(GraphPoint, 2);
+                return -15 *Mathf.Pow(GraphPoint, 2);
             case 1:
                 return -JumpHeight*Mathf.Pow((1/JumpHangTime)*(GraphPoint - JumpHangTime) , 2) + JumpHeight;
             case 2:
@@ -212,6 +212,7 @@ public class PlayerMovement : MonoBehaviour
                     CanDodge = true;
                     IsDodge = false;
                     DodgeTime = 0;
+                    Debug.Log(AirGraph);
                 }
                 else if(Button3.ReadValue<float>() == 1)
                 {
@@ -219,6 +220,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else
                 {
+                    Debug.Log("thisHappened");
                     AirGraph = 1;
                 }
             }
@@ -266,7 +268,7 @@ public class PlayerMovement : MonoBehaviour
                     cum = ResultsList[i];
                 }
             }
-            Debug.Log(cum.centroid - new Vector2(transform.position.x, transform.position.y));
+            //Debug.Log(cum.centroid - new Vector2(transform.position.x, transform.position.y));
             transform.position = (new Vector3(cum.centroid.x, cum.centroid.y, 0));
             return new List<bool>(){cum.normal.x !=0, cum.normal.y !=0};
         }
