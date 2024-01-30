@@ -84,9 +84,27 @@ public class PlayerMovement : MonoBehaviour
     
     void FixedUpdate()
     {
-        FallingUpdate();
-        AirUpdate();
-        groundedUpdate();
+        Vector2 moveVector; 
+        if (Input.GetKey(KeyCode.D))
+        {
+            moveVector.x += 1;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            moveVector.x += -1;
+        }
+        if (Input.GetKey(KeyCode.W))
+        {
+            moveVector.y += 1;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            moveVector.y += -1;
+        }
+        
+        //FallingUpdate();
+        //AirUpdate();
+        //groundedUpdate();
     }
     //AirGraph 0 = fall
     //AirGraph 1 = normal jump
@@ -126,13 +144,13 @@ public class PlayerMovement : MonoBehaviour
             }
             List<bool> CollisionList = new List<bool>();
             CollisionList = move( new Vector2(speed , getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)));
-            GTime += .02f;
             if (CollisionList[0])
             {
                 StartFall(new Vector2(-Mathf.Sign(speed), 0) * 3);
             }
-            if(CollisionList[1] && Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)) < 0)
+            if(CollisionList[1] && (Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime))) == -1)
             {
+                Debug.Log("this happened");
                 GroundState = 1;
                 GTime = 0;
             }
@@ -140,8 +158,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 StartFall(new Vector2(Mathf.Sign(speed), -1) * 3);
             }
-            
-            
+            GTime += .02f;
+
+
         }
     }
 
@@ -165,7 +184,6 @@ public class PlayerMovement : MonoBehaviour
 
     void groundedUpdate()
     {
-         
         if(GroundState == 1)
         {
             if(LeftRight.ReadValue<float>() != 0)
@@ -212,7 +230,7 @@ public class PlayerMovement : MonoBehaviour
                     CanDodge = true;
                     IsDodge = false;
                     DodgeTime = 0;
-                    Debug.Log(AirGraph);
+                    //Debug.Log(AirGraph);
                 }
                 else if(Button3.ReadValue<float>() == 1)
                 {
@@ -220,7 +238,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("thisHappened");
+                    //Debug.Log("thisHappened");
                     AirGraph = 1;
                 }
             }
@@ -268,7 +286,9 @@ public class PlayerMovement : MonoBehaviour
                     cum = ResultsList[i];
                 }
             }
-            //Debug.Log(cum.centroid - new Vector2(transform.position.x, transform.position.y));
+            Debug.Log(GroundState);
+            Debug.Log(cum.centroid - new Vector2(transform.position.x, transform.position.y));
+            Debug.Log(Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)));
             transform.position = (new Vector3(cum.centroid.x, cum.centroid.y, 0));
             return new List<bool>(){cum.normal.x !=0, cum.normal.y !=0};
         }
