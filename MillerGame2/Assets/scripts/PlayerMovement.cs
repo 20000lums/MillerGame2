@@ -74,17 +74,12 @@ public class PlayerMovement : MonoBehaviour
     // dodge
     public float DodgeLeingth = 1;
     public float DodgeCooldown = 1.5f;
+    //fall
+    public float FallKnockback = 0;
 
-    void Start()
+    public Vector2 moveVector;
+    void Controll()
     {
-        groundFilter.useTriggers = false;
-        groundFilter.SetLayerMask(ground);
-    }
-
-    
-    void FixedUpdate()
-    {
-        Vector2 moveVector; 
         if (Input.GetKey(KeyCode.D))
         {
             moveVector.x += 1;
@@ -101,10 +96,22 @@ public class PlayerMovement : MonoBehaviour
         {
             moveVector.y += -1;
         }
-        
-        //FallingUpdate();
-        //AirUpdate();
-        //groundedUpdate();
+        move(moveVector * .2f);
+        moveVector = Vector2.zero;
+    }
+    void Start()
+    {
+        groundFilter.useTriggers = false;
+        groundFilter.SetLayerMask(ground);
+    }
+
+    void FixedUpdate()
+    {
+
+        //Controll();
+        FallingUpdate();
+        AirUpdate();
+        groundedUpdate();
     }
     //AirGraph 0 = fall
     //AirGraph 1 = normal jump
@@ -125,7 +132,6 @@ public class PlayerMovement : MonoBehaviour
                 return 4;
             case 4:
                 return -StompSpeed * GraphPoint;
-            
         }
         return 7;
     }
@@ -146,7 +152,7 @@ public class PlayerMovement : MonoBehaviour
             CollisionList = move( new Vector2(speed , getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)));
             if (CollisionList[0])
             {
-                StartFall(new Vector2(-Mathf.Sign(speed), 0) * 3);
+                StartFall();
             }
             if(CollisionList[1] && (Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime))) == -1)
             {
@@ -156,7 +162,7 @@ public class PlayerMovement : MonoBehaviour
             }
             else if(CollisionList[1])
             {
-                StartFall(new Vector2(Mathf.Sign(speed), -1) * 3);
+                StartFall();
             }
             GTime += .02f;
 
@@ -164,21 +170,22 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void StartFall(Vector2 KnockbackDirection)
+    void StartFall()
     {
-        speed = 0;
         GroundState = 3;
-        RB.isKinematic = false;
-        RB.velocity = KnockbackDirection;
+        GTime = 0;
     }
 
     void FallingUpdate()
     {
-        RaycastHit2D[] trash = new RaycastHit2D[16];
-        if(GroundState == 3 && RB.Cast(Vector2.down, groundFilter,trash, .02f) != 0)
+        if(GroundState == 3)
         {
-            RB.isKinematic = true;
-            GroundState = 1;
+            if(move(new Vector2(-1f*FallKnockback*Mathf.Sign(speed), getGraph(0, GTime + .02f) - getGraph(0, GTime)))[1])
+            {
+                GroundState = 1;
+                speed = 0;
+            }
+            GTime += .02f;
         }
     }
 
@@ -281,7 +288,7 @@ public class PlayerMovement : MonoBehaviour
             RaycastHit2D cum = ResultsList[0];
             for (int i = 1; i < ResultsList.Count; i++)
             {
-                if(cum.distance < ResultsList[i].distance)
+                if (Vector2.Distance(cum.centroid, new Vector2(transform.position.x, transform.position.y)) < Vector2.Distance(ResultsList[i].centroid, new Vector2(transform.position.x, transform.position.y)))
                 {
                     cum = ResultsList[i];
                 }

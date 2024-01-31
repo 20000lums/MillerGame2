@@ -1032,8 +1032,16 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6412630241858928201, guid: fce95ccfb65a22d40bb76516b5f7579c, type: 3}
+      propertyPath: FallKnockback
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6412630241858928201, guid: fce95ccfb65a22d40bb76516b5f7579c, type: 3}
       propertyPath: AccelerationTime
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6412630241858928201, guid: fce95ccfb65a22d40bb76516b5f7579c, type: 3}
+      propertyPath: LongJumpHangTime
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6412630241858928205, guid: fce95ccfb65a22d40bb76516b5f7579c, type: 3}
       propertyPath: m_Name
