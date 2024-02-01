@@ -180,10 +180,16 @@ public class PlayerMovement : MonoBehaviour
     {
         if(GroundState == 3)
         {
-            if(move(new Vector2(-1f*FallKnockback*Mathf.Sign(speed), getGraph(0, GTime + .02f) - getGraph(0, GTime)))[1])
+            List<bool> ResultsList = move(new Vector2(-1f * FallKnockback * Mathf.Sign(speed), getGraph(0, GTime + .02f) - getGraph(0, GTime)));
+            if (ResultsList[1])
             {
                 GroundState = 1;
                 speed = 0;
+            }
+            else if(ResultsList[0])
+            {
+                speed = -speed;
+                GTime = 0;
             }
             GTime += .02f;
         }
