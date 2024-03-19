@@ -54,6 +54,11 @@ public class PlayerMovement : MonoBehaviour
     private float DodgeTime = 0;
     public float speedLevel { get; private set; } = 0;
     float GTime = 0;
+    float ADIDisableTimer = 0;
+    public float ADIDisableTime = 0;
+    bool ADIEnabled = true;
+    float CoyoteTimer = 0;
+    public float CoyoteTime = 0;
     // movement variables n shit.
     // basic movement
     public float TopSpeed = 1;
@@ -76,6 +81,8 @@ public class PlayerMovement : MonoBehaviour
     public float DodgeCooldown = 1.5f;
     //fall
     public float FallKnockback = 0;
+    //Directional Input
+    public float ADIStreingth = 0;
 
     public Vector2 moveVector;
     void Controll()
@@ -129,42 +136,108 @@ public class PlayerMovement : MonoBehaviour
             case 2:
                 return -LongJumpHeight * Mathf.Pow((1 / LongJumpHangTime) * (GraphPoint - LongJumpHangTime), 2) + LongJumpHeight;
             case 3:
-                return 4;
+                return -(HighJumpBaseHeight + speedLevel * HighJumpStepHeight) * Mathf.Pow((1 / HighJumpHangTime) * (GraphPoint - HighJumpHangTime), 2) + (HighJumpBaseHeight + speedLevel * HighJumpStepHeight);
             case 4:
                 return -StompSpeed * GraphPoint;
         }
         return 7;
     }
 
+    bool button3PressedLastFrame = false;
     void AirUpdate()
     {
         
         if(GroundState == 2)
         {
-            
-            if (Button3.ReadValue<float>() == 1 && AirGraph != 4)
+            if(AirGraph == 0)
             {
-                
+                CoyoteTimer += .02f;
+                if(CoyoteTime > CoyoteTimer)
+                {
+                    JumpUpdate();
+                }
+            }
+            bool button3JustPressed = Button3.ReadValue<float>() == 1 && !button3PressedLastFrame;
+            button3PressedLastFrame = Button3.ReadValue<float>() == 1;
+            if(button3JustPressed && AirGraph != 4)
+            {
+                Debug.Log("this happened");
                 AirGraph = 4;
                 GTime = 0;
             }
+            float AirSpeed = 0;
+            if(speed != 0)
+            {
+                AirSpeed = speed - ADIStreingth * Mathf.Sign(speed) + LeftRight.ReadValue<float>() * ADIStreingth;
+                if(Mathf.Abs(speed) < ADIStreingth)
+                {
+                    //Debug.Log("miller");
+                    AirSpeed = LeftRight.ReadValue<float>() * ADIStreingth;
+                }
+            }
+            else
+            {
+                //Debug.Log("taco");
+                AirSpeed = LeftRight.ReadValue<float>() * ADIStreingth;
+            }
+            if(Mathf.Abs(speed) - ADIStreingth <= 0 && LeftRight.ReadValue<float>() == 0)
+            {
+                //Debug.Log("pizza");
+                AirSpeed = 0;
+            }
+            if(!ADIEnabled)
+            {
+                AirSpeed = speed;
+            }
+            DodgeUpdate();
             List<bool> CollisionList = new List<bool>();
-            CollisionList = move( new Vector2(speed , getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)));
+            CollisionList = move( new Vector2(AirSpeed , getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)));
             if (CollisionList[0])
             {
-                StartFall();
+                if(IsDodge)
+                {
+                    speed = -speed;
+                    CanDodge = true;
+                    IsDodge = false;
+                    DodgeTime = 0;
+                    ADIDisableTimer = 0;
+                    GTime = 0;
+                    //Debug.Log("good");
+                }
+                else
+                {
+                    //Debug.Log("bad");
+                    speed = AirSpeed;
+                    StartFall();
+                }
             }
             if(CollisionList[1] && (Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime))) == -1)
             {
-                Debug.Log("this happened");
+                //Debug.Log("this happened");
                 GroundState = 1;
                 GTime = 0;
+                speed = AirSpeed;
+                if(AirGraph == 4 && LeftRight.ReadValue<float>() == 0)
+                {
+                    speed = 0;
+                }
+                
             }
             else if(CollisionList[1])
             {
                 StartFall();
             }
             GTime += .02f;
+            if(ADIDisableTimer < ADIDisableTime)
+            {
+                ADIDisableTimer += 0.2f;
+                ADIEnabled = false;
+            }
+            else
+            {
+                ADIEnabled = true;
+            }
+            
 
 
         }
@@ -221,22 +294,26 @@ public class PlayerMovement : MonoBehaviour
             {
                 speed = 0;
             }
-            speedLevel = (3*speed/TopSpeed)-((3*speed/TopSpeed)%1);
-            if(Button2.ReadValue<float>() == 1 && CanDodge)
+            speedLevel = Mathf.Abs((3*speed/TopSpeed)-((3*speed/TopSpeed)%1));
+            DodgeUpdate();
+            JumpUpdate();
+            RaycastHit2D[] trash = new RaycastHit2D[16];
+            if(RB.Cast(Vector2.down, groundFilter,trash, .01f) == 0)
             {
-                IsDodge = true;
-                CanDodge = false;
+                GroundState = 2;
+                AirGraph = 0;
             }
-            if(!CanDodge)
-            {
-                IsDodge = DodgeTime <= DodgeLeingth;
-                CanDodge = DodgeTime > DodgeCooldown;
-                DodgeTime += .02f;
-            }
-            if (Button1.ReadValue<float>() == 1)
+            
+        }
+
+    }
+    void JumpUpdate()
+    {
+        if (Button1.ReadValue<float>() == 1)
             {
                 
                 GroundState = 2;
+                GTime = 0;
                 if(IsDodge)
                 {
                     AirGraph = 2;
@@ -255,13 +332,25 @@ public class PlayerMovement : MonoBehaviour
                     AirGraph = 1;
                 }
             }
-            RaycastHit2D[] trash = new RaycastHit2D[16];
-            if(RB.Cast(Vector2.down, groundFilter,trash, .01f) == 0)
-            {
-                GroundState = 2;
-                AirGraph = 0;
-            }
-            
+    }
+    bool wasPressedLastFrame = false;
+    void DodgeUpdate()
+    {
+        //Debug.Log(DodgeTime);
+        
+        bool buttonJustPressed = !wasPressedLastFrame && Button2.ReadValue<float>() == 1;
+        wasPressedLastFrame = Button2.ReadValue<float>() == 1;
+        if(buttonJustPressed)
+        {
+            IsDodge = true;
+            CanDodge = false;
+            DodgeTime = 0;
+        }
+        if(!CanDodge)
+        {
+            IsDodge = DodgeTime <= DodgeLeingth;
+            CanDodge = DodgeTime > DodgeCooldown;
+            DodgeTime += .02f;
         }
     }
 
@@ -299,14 +388,11 @@ public class PlayerMovement : MonoBehaviour
                     cum = ResultsList[i];
                 }
             }
-            Debug.Log(GroundState);
-            Debug.Log(cum.centroid - new Vector2(transform.position.x, transform.position.y));
-            Debug.Log(Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)));
+           //Debug.Log(GroundState);
+           //Debug.Log(cum.centroid - new Vector2(transform.position.x, transform.position.y));
+           //Debug.Log(Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)));
             transform.position = (new Vector3(cum.centroid.x, cum.centroid.y, 0));
             return new List<bool>(){cum.normal.x !=0, cum.normal.y !=0};
         }
-    }
-      
-      
-    
+    }   
 }
