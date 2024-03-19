@@ -45,9 +45,10 @@ public class PlayerMovement : MonoBehaviour
     public Collider2D Collider;
     public LayerMask ground;
     private ContactFilter2D groundFilter;
+    private ContactFilter2D ObsticleFilter;
     // variables for movement
-    private int GroundState = 1;
-    private float speed = 0;
+    public int GroundState { get; private set; } = 1;
+    public float speed = 0;
     private int AirGraph = 0;
     private bool IsDodge = false;
     private bool CanDodge = true;
@@ -59,6 +60,7 @@ public class PlayerMovement : MonoBehaviour
     bool ADIEnabled = true;
     float CoyoteTimer = 0;
     public float CoyoteTime = 0;
+    public float speedDecrease = 1;
     // movement variables n shit.
     // basic movement
     public float TopSpeed = 1;
@@ -110,6 +112,8 @@ public class PlayerMovement : MonoBehaviour
     {
         groundFilter.useTriggers = false;
         groundFilter.SetLayerMask(ground);
+        ObsticleFilter.useTriggers = false;
+        ObsticleFilter.SetLayerMask(ground);
     }
 
     void FixedUpdate()
@@ -161,7 +165,7 @@ public class PlayerMovement : MonoBehaviour
             button3PressedLastFrame = Button3.ReadValue<float>() == 1;
             if(button3JustPressed && AirGraph != 4)
             {
-                Debug.Log("this happened");
+                //Debug.Log("this happened");
                 AirGraph = 4;
                 GTime = 0;
             }
@@ -357,6 +361,19 @@ public class PlayerMovement : MonoBehaviour
     //simulates normal force. moving using this method will prevent you from going through layer "ground" but will be uneffected by momentum n stuff
     List<bool> move(Vector2 Direction) 
     {
+        //check for obsticles
+       //RaycastHit2D[] ObsticleResults = new RaycastHit2D[16];
+       //if(RB.Cast(Direction, ObsticleFilter, ObsticleResults, Direction.magnitude) != 0)
+       //for (int i = 0; i < ObsticleResults.Length; i++)
+       //    {
+       //        if(ObsticleResults[i].collider.gameObject.transform.CompareTag("Slower"))
+       //        {
+       //            speed = speedDecrease*speed;
+       //            Destroy(ObsticleResults[i].collider.gameObject);
+       //        }
+       //    }
+
+        //check for terrain
         RaycastHit2D[] Results = new RaycastHit2D[16];
         if (RB.Cast(Direction, groundFilter, Results, Direction.magnitude) == 0)
         {
