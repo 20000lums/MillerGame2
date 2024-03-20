@@ -362,17 +362,20 @@ public class PlayerMovement : MonoBehaviour
     List<bool> move(Vector2 Direction) 
     {
         //check for obsticles
-       RaycastHit2D[] ObsticleResults = new RaycastHit2D[16];
-       if(RB.Cast(Direction, ObsticleFilter, ObsticleResults, Direction.magnitude) != 0)
-       for (int i = 0; i < ObsticleResults.Length; i++)
-           {
-               if(ObsticleResults[i].collider.gameObject.transform.CompareTag("Slower"))
-               {
-                   speed = speedDecrease*speed;
-                   Destroy(ObsticleResults[i].collider.gameObject);
-               }
-           }
+       //RaycastHit2D[] ObsticleResults = new RaycastHit2D[16];
+       //if(RB.Cast(Direction, ObsticleFilter, ObsticleResults, Direction.magnitude) != 0)
+       //{
+       //for (int i = 0; i < ObsticleResults.Length; i++)
+       //    {
+       //        if(ObsticleResults[i].collider.gameObject.transform.CompareTag("Slower"))
+       //        {
+       //            speed = speedDecrease*speed;
+       //            Destroy(ObsticleResults[i].collider.gameObject);
+       //        }
+       //    }
+       //}
 
+       
         //check for terrain
         RaycastHit2D[] Results = new RaycastHit2D[16];
         if (RB.Cast(Direction, groundFilter, Results, Direction.magnitude) == 0)
