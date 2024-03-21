@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
     private ContactFilter2D ObsticleFilter;
     // variables for movement
     public int GroundState { get; private set; } = 1;
-    public float speed = 0;
+    public float speed {get; private set;} = 0;
     private int AirGraph = 0;
     private bool IsDodge = false;
     private bool CanDodge = true;
@@ -299,6 +299,7 @@ public class PlayerMovement : MonoBehaviour
                 speed = 0;
             }
             speedLevel = Mathf.Abs((3*speed/TopSpeed)-((3*speed/TopSpeed)%1));
+            Debug.Log(speedLevel);
             DodgeUpdate();
             JumpUpdate();
             RaycastHit2D[] trash = new RaycastHit2D[16];
