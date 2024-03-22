@@ -257,7 +257,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if(GroundState == 3)
         {
-            List<bool> ResultsList = move(new Vector2(-1f * FallKnockback * Mathf.Sign(speed), getGraph(0, GTime + .02f) - getGraph(0, GTime)));
+            List<bool> ResultsList = move(new Vector2(-1 * FallKnockback * speed, getGraph(0, GTime + .02f) - getGraph(0, GTime)));
             if (ResultsList[1])
             {
                 GroundState = 1;
@@ -265,7 +265,7 @@ public class PlayerMovement : MonoBehaviour
             }
             else if(ResultsList[0])
             {
-                speed = -speed;
+                speed = -speed/2;
                 GTime = 0;
             }
             GTime += .02f;
