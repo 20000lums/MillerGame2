@@ -17,5 +17,6 @@ public class PlayerAniations : MonoBehaviour
     void Update()
     {
         animator.SetFloat("PlayerSpeed", PlayerScript.speedLevel);
+        animator.SetBool("PlayerIsAirborn", PlayerScript.GroundState != 1);
     }
 }
