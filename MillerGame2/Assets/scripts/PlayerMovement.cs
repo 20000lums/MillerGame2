@@ -114,6 +114,7 @@ public class PlayerMovement : MonoBehaviour
         groundFilter.SetLayerMask(ground);
         ObsticleFilter.useTriggers = false;
         ObsticleFilter.SetLayerMask(ground);
+        Collider = GetComponent<Collider2D>();
     }
 
     void FixedUpdate()
@@ -271,6 +272,11 @@ public class PlayerMovement : MonoBehaviour
             GTime += .02f;
         }
     }
+
+    //void Collider.OnCollisionEnter()
+    //{
+    //
+    //}
 
     void groundedUpdate()
     {
