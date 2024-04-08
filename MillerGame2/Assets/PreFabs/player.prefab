@@ -211,7 +211,7 @@ MonoBehaviour:
   JumpHeight: 3.5
   JumpHangTime: 0.3
   LongJumpHeight: 1.5
-  LongJumpHangTime: 0.5
+  LongJumpHangTime: 0.4
   HighJumpStepHeight: 0.5
   HighJumpBaseHeight: 4
   HighJumpHangTime: 0.4

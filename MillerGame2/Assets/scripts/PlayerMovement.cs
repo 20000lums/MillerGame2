@@ -304,7 +304,11 @@ public class PlayerMovement : MonoBehaviour
             {
                 speed = 0;
             }
-            speedLevel = Mathf.Abs((3*speed/TopSpeed)-((3*speed/TopSpeed)%1));
+            speedLevel = 1 + Mathf.Abs((3*speed/TopSpeed)-((3*speed/TopSpeed)%1));
+            if(speed == 0)
+            {
+                speedLevel = 0;
+            }
             Debug.Log(speedLevel);
             DodgeUpdate();
             JumpUpdate();
