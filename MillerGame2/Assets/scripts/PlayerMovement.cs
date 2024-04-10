@@ -47,6 +47,7 @@ public class PlayerMovement : MonoBehaviour
     private ContactFilter2D groundFilter;
     private ContactFilter2D ObsticleFilter;
     // variables for movement
+    public float Dampener = 0;
     public int GroundState { get; private set; } = 1;
     public float speed {get; private set;} = 0;
     private int AirGraph = 0;
@@ -309,12 +310,13 @@ public class PlayerMovement : MonoBehaviour
             {
                 speedLevel = 0;
             }
-            Debug.Log(speedLevel);
+            //Debug.Log(speedLevel);
             DodgeUpdate();
             JumpUpdate();
             RaycastHit2D[] trash = new RaycastHit2D[16];
-            if(RB.Cast(Vector2.down, groundFilter,trash, .01f) == 0)
+            if(RB.Cast(Vector2.down, groundFilter,trash, .5f) == 0)
             {
+
                 GroundState = 2;
                 AirGraph = 0;
             }
@@ -372,26 +374,14 @@ public class PlayerMovement : MonoBehaviour
     //simulates normal force. moving using this method will prevent you from going through layer "ground" but will be uneffected by momentum n stuff
     List<bool> move(Vector2 Direction) 
     {
-        //check for obsticles
-       //RaycastHit2D[] ObsticleResults = new RaycastHit2D[16];
-       //if(RB.Cast(Direction, ObsticleFilter, ObsticleResults, Direction.magnitude) != 0)
-       //{
-       //for (int i = 0; i < ObsticleResults.Length; i++)
-       //    {
-       //        if(ObsticleResults[i].collider.gameObject.transform.CompareTag("Slower"))
-       //        {
-       //            speed = speedDecrease*speed;
-       //            Destroy(ObsticleResults[i].collider.gameObject);
-       //        }
-       //    }
-       //}
 
        
         //check for terrain
         RaycastHit2D[] Results = new RaycastHit2D[16];
         if (RB.Cast(Direction, groundFilter, Results, Direction.magnitude) == 0)
         {
-            RB.MovePosition(Direction + new Vector2(transform.position.x, transform.position.y));
+            //RB.MovePosition(Direction + new Vector2(transform.position.x, transform.position.y));
+            transform.position = new Vector3(Direction.x, Direction.y, 0) + transform.position;
             return new List<bool>(){false, false};
         }
         else
@@ -408,8 +398,9 @@ public class PlayerMovement : MonoBehaviour
             }
             if(ResultsList.Count == 0)
             {
-                 RB.MovePosition(Direction + new Vector2(transform.position.x, transform.position.y));
-                 return new List<bool>(){false, false};
+                //RB.MovePosition(Direction + new Vector2(transform.position.x, transform.position.y));
+                transform.position = new Vector3(Direction.x, Direction.y, 0) + transform.position;
+                return new List<bool>(){false, false};
             }
             RaycastHit2D cum = ResultsList[0];
             for (int i = 1; i < ResultsList.Count; i++)
@@ -422,7 +413,20 @@ public class PlayerMovement : MonoBehaviour
            //Debug.Log(GroundState);
            //Debug.Log(cum.centroid - new Vector2(transform.position.x, transform.position.y));
            //Debug.Log(Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)));
-            transform.position = (new Vector3(cum.centroid.x, cum.centroid.y, 0));
+            transform.position = (new Vector3(cum.centroid.x - (cum.normal.x == 0 ? 0 : Mathf.Sign(Direction.x) * Dampener) , cum.centroid.y - (cum.normal.y == 0 ? 0 : Mathf.Sign(Direction.y) * Dampener),0));
+
+            //if (RB.Cast(Direction, groundFilter, Results, vector2.down) != 0)
+            //{
+            //    cum = ResultsList[0].
+            //    for (int i = 1; i < Results.Length; i++)
+            //    {
+            //        if (Results[i].centroid - cum.centroid < 0)
+            //        {
+            //            ResultsList.Add(Results[i]);
+            //        }
+            //
+            //    }
+            //}
             return new List<bool>(){cum.normal.x !=0, cum.normal.y !=0};
         }
     }   
