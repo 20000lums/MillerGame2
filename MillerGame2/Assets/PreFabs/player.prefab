@@ -151,7 +151,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.08}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -162,7 +162,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1.64}
+  m_Size: {x: 0.9, y: 1.7}
   m_EdgeRadius: 0
 --- !u!50 &6412630241858928206
 Rigidbody2D:
@@ -202,7 +202,8 @@ MonoBehaviour:
   ground:
     serializedVersion: 2
     m_Bits: 8
-  ADIDisableTime: 1
+  Dampener: 0.01
+  ADIDisableTime: 2
   CoyoteTime: 0.2
   speedDecrease: 1
   TopSpeed: 0.5
@@ -218,7 +219,7 @@ MonoBehaviour:
   StompSpeed: 30
   DodgeLeingth: 0.8
   DodgeCooldown: 1
-  FallKnockback: 0.2
+  FallKnockback: 0.5
   ADIStreingth: 0.1
   moveVector: {x: 0, y: 0}
 --- !u!212 &785323263
