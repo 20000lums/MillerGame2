@@ -414,19 +414,6 @@ public class PlayerMovement : MonoBehaviour
            //Debug.Log(cum.centroid - new Vector2(transform.position.x, transform.position.y));
            //Debug.Log(Mathf.Sign(getGraph(AirGraph, GTime + .02f) - getGraph(AirGraph, GTime)));
             transform.position = (new Vector3(cum.centroid.x - (cum.normal.x == 0 ? 0 : Mathf.Sign(Direction.x) * Dampener) , cum.centroid.y - (cum.normal.y == 0 ? 0 : Mathf.Sign(Direction.y) * Dampener),0));
-
-            //if (RB.Cast(Direction, groundFilter, Results, vector2.down) != 0)
-            //{
-            //    cum = ResultsList[0].
-            //    for (int i = 1; i < Results.Length; i++)
-            //    {
-            //        if (Results[i].centroid - cum.centroid < 0)
-            //        {
-            //            ResultsList.Add(Results[i]);
-            //        }
-            //
-            //    }
-            //}
             return new List<bool>(){cum.normal.x !=0, cum.normal.y !=0};
         }
     }   

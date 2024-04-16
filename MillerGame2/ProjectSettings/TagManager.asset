@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Slower
   - BreakBlock
+  - DialogLogic
   layers:
   - Default
   - TransparentFX
