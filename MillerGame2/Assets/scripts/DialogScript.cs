@@ -10,7 +10,9 @@ public class DialogScript : MonoBehaviour
     private List<ScriptLine> Script;
     private bool IsCooldown = false;
 
-    public Text DialogText; 
+    public Text DialogText;
+    public Text NameText;
+    public GameObject DialogBox;
 
     public float talkSpeed = 0;
 
@@ -22,6 +24,8 @@ public class DialogScript : MonoBehaviour
         ScriptIndex = 0;
         LineIndex = 0;
         DialogText.text = "";
+        DialogBox.SetActive(true);
+        NameText.text = Script[0].speaker;
     }
 
 
@@ -31,10 +35,11 @@ public class DialogScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(DialogOn)
+        
+        if (DialogOn)
         {
             Timer += .02f;
-            if(!IsCooldown)
+            if (!IsCooldown)
             {
 
                 if(Timer > talkSpeed)
@@ -57,14 +62,17 @@ public class DialogScript : MonoBehaviour
                     SceneManager.LoadScene(1);
                 }
                 ScriptIndex += 1;
+                NameText.text = Script[ScriptIndex].speaker;
                 Timer = 0;
                 DialogText.text = "";
-            }
-            if(ScriptIndex >= Script.Count)
-            {
-
-                DialogOn = false;
-                ScriptIndex = 0;
+                if (ScriptIndex >= Script.Count)
+                {
+                    Debug.Log("this happened");
+                    Debug.Log(Script.Count);
+                    DialogBox.SetActive(true);
+                    DialogOn = false;
+                    ScriptIndex = 0;
+                }
             }
         }
         
