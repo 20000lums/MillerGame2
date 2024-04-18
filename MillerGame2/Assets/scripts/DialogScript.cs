@@ -56,23 +56,25 @@ public class DialogScript : MonoBehaviour
             }
             else if(Timer > Script[ScriptIndex].WaitTime)
             {
+                if (ScriptIndex + 1 == Script.Count)
+                {
+                    DialogBox.SetActive(false);
+                    DialogOn = false;
+                    ScriptIndex = 0;
+                }
+                else
+                {
+                    NameText.text = Script[ScriptIndex+1].speaker;
+                }
                 IsCooldown = false;
                 if(Script[ScriptIndex].EndLevelAfter)
                 {
                     SceneManager.LoadScene(1);
                 }
                 ScriptIndex += 1;
-                NameText.text = Script[ScriptIndex].speaker;
+                
                 Timer = 0;
                 DialogText.text = "";
-                if (ScriptIndex >= Script.Count)
-                {
-                    Debug.Log("this happened");
-                    Debug.Log(Script.Count);
-                    DialogBox.SetActive(true);
-                    DialogOn = false;
-                    ScriptIndex = 0;
-                }
             }
         }
         
